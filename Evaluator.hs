@@ -166,5 +166,4 @@ evaluator ex = ev [] $ map makeToken $ tokenize ex ""
 
 evaluator' :: String -> (Token, [Assignment])
 evaluator' "" = (TInteger 0, [])
-evaluator' ex = (token, assignments)
-  where (token, assignments) = runWriter $ ev' $ map makeToken $ tokenize ex ""
+evaluator' ex = runWriter $ ev' $ map makeToken $ tokenize ex ""
