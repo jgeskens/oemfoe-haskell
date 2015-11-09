@@ -18,10 +18,7 @@ import Evaluator
 type API = "eval-monadic" :> Capture "expr" String :> Get '[JSON] String
       :<|> "eval-non-monadic" :> Capture "expr" String :> Get '[JSON] String
       :<|> "test" :> Capture "a" Int :> Capture "b" Int :> Get '[JSON] String
-      :<|> "euler1" :> Get '[JSON] String
-      :<|> "euler2" :> Get '[JSON] String
-      :<|> "euler3" :> Get '[JSON] String
-      :<|> "euler4" :> Get '[JSON] String
+      :<|> "eulers" :> Capture "eulerNumber" Int :> Get '[JSON] String
 
 -- | Euler 1
 -- If we list all the natural numbers below 10 that are multiples of 3 or 5,
@@ -78,14 +75,14 @@ palindromeproducts = [x * y | x <- factorpool, y <- factorpool, ispalindrome (x 
 euler4 = maximum palindromeproducts
 
 
+eulerList = [euler1, euler2, euler3, euler4]
+
+
 server :: Server API
 server = evalMonadic
     :<|> evalNonMonadic
     :<|> test
-    :<|> euler1h
-    :<|> euler2h
-    :<|> euler3h
-    :<|> euler4h
+    :<|> eulers
 
   where evalMonadic :: String -> EitherT ServantErr IO String
         evalMonadic expr = return $ show $ evaluator' expr
@@ -95,10 +92,7 @@ server = evalMonadic
 
         test a b = return $ show $ isprime a
 
-        euler1h = return $ show euler1
-        euler2h = return $ show euler2
-        euler3h = return $ show euler3
-        euler4h = return $ show euler4
+        eulers eulerNumber = return $ show $ if eulerNumber < length eulerList then eulerList !! eulerNumber else 0
 
 
 api :: Proxy API
